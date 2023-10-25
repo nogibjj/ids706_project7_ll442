@@ -13,6 +13,8 @@ cargo run --  --message "Ypp dy dro lexuob. Ofobi zobcyx pyb drowcovfoc" --decry
 
 use caeser_cipher_cli::{decrypt, encrypt};
 use clap::Parser;
+use std::fs::OpenOptions;
+use std::io::Write;
 
 /// CLI tool to encrypt and decrypt messages using the caeser cipher
 #[derive(Parser, Debug)]
@@ -34,16 +36,42 @@ struct Args {
     /// Must be between 1 and 25, the default is 3
     #[arg(short, long, default_value = "3")]
     shift: u8,
+
+    //add the output to a file instead of stdout
+    // output file is optional 
+    #[arg(short, long)]
+    output: Option<String>,
 }
 
 // run it
 fn main() {
     let args = Args::parse();
     if args.encrypt {
-        println!("{}", encrypt(&args.message, args.shift));
+        let result =  encrypt(&args.message, args.shift);
+        handle_output(&args.output, &result);
     } else if args.decrypt {
-        println!("{}", decrypt(&args.message, args.shift));
+        let result = decrypt(&args.message, args.shift);
+        handle_output(&args.output, &result);
     } else {
         println!("Please specify either --encrypt or --decrypt");
+    }
+}
+
+fn handle_output(output_file: &Option<String>, result: &str) {
+    match output_file {
+        Some(path) => {
+            let mut file = OpenOptions::new()
+                .create(true)
+                .append(true)
+                .open(path)
+                .expect("Error opening/creating output file");
+
+            if let Err(err) = writeln!(file, "{}", result) {
+                eprintln!("Error writing to output file: {}", err);
+            }
+        }
+        None => {
+            println!("{}", result);
+        }
     }
 }
