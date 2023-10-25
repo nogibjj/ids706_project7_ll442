@@ -12,7 +12,7 @@ It is modified based on the template project [https://nogibjj.github.io/rust-dat
 
 To package a rust script into the Command-Line Tool package
 * Choose one project provided in the template repo
-* Modify the main.rs file in the project (here we choose caesar-cipher-cli) to allow input from the terminal and store the output into the output.txt file
+* Modify the main.rs file in the project (here we choose caesar-cipher-cli) to allow input from the terminal and store the output into the output.txt file based on CLT tool including `std::fs::OpenOptions` and `std::io::Write`
 
 ## Stpes
 
